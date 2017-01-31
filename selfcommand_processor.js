@@ -12,12 +12,16 @@ module.exports = class SelfCommandProcessor{
             return;
         }
         
-        this.command = this.message.content.slice(commandPrefix.length).split(" ");
+        const command = this.message.content.slice(commandPrefix.length).split(" ");
+
+        this.commandName = command.shift().toLowerCase();
+        this.commandArgs = command.concat();
     }
 
     processGlobalArg() {
-        if(this.command.indexOf("-d") > 0) {
+        if(this.commandArgs[0] === "-d" || this.commandArgs[0] === "--delete") {
             this.message.delete();
+            this.commandArgs.shift();
         }
     }
 
@@ -30,22 +34,19 @@ module.exports = class SelfCommandProcessor{
             return PingTimer.reflect(this.message);
         }
 
-        if(this.command === undefined || this.command.length == 0) {
+        if(this.commandName === undefined) {
             return null;
         }
 
-        const commandArgs = this.command.concat();
-        const commandName = commandArgs.shift().toLowerCase();
-
         this.processGlobalArg();
 
-        switch(commandName) {
+        switch(this.commandName) {
             case "ping":
-                return PingCmd.process(commandArgs);
+                return PingCmd.process(this.commandArgs);
             case "eval":
-                return EvalCmd.process(commandArgs);
+                return EvalCmd.process(this.commandArgs);
             default:
-                console.log(`command "${commandName}" was given but was ignored.`);
+                console.log(`command "${this.commandName}" was given but was ignored.`);
                 return null;
         }
     }
