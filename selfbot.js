@@ -13,7 +13,7 @@ client.Dispatcher.on(Events.GATEWAY_READY, e => {
 
 client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
     const processor = new SelfCommandProcessor(e, settings.prefix);
-    processor.process();
+    processor.feedBackOutput();
 });
 
 client.connect(token);
