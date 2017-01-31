@@ -1,7 +1,7 @@
 const FS = require("fs");
 const Discordie = require("discordie");
 const Events = Discordie.Events;
-const CommandProcessor = require("./command_processor.js");
+const SelfCommandProcessor = require("./selfcommand_processor.js");
 
 const token = require("./.user_token.json");
 const settings = require("./settings.json");
@@ -14,7 +14,7 @@ client.Dispatcher.on(Events.GATEWAY_READY, e => {
 client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
     const message = e.message.content;
     if(message.startsWith(settings.prefix)){
-        const processor = new CommandProcessor(e);
+        const processor = new SelfCommandProcessor(e);
         const command = message.slice(settings.prefix.length);
         processor.process(command);
     }
