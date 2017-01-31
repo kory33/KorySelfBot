@@ -16,6 +16,12 @@ module.exports = class SelfCommandProcessor{
         this.command = this.message.content.slice(commandPrefix.length).split(" ");
     }
 
+    processGlobalArg() {
+        if(this.command.indexOf("-d") > 0) {
+            this.message.delete();
+        }
+    }
+
     /**
      * return the string result of command evaluation
      */
@@ -31,6 +37,8 @@ module.exports = class SelfCommandProcessor{
 
         const commandArgs = this.command.concat();
         const commandName = commandArgs.shift().toLowerCase();
+
+        this.processGlobalArg();
 
         switch(commandName) {
             case "ping":
