@@ -1,5 +1,5 @@
 module.exports = {
     process: args => {
-        return "`pong!`";
+        return "Pong!";
     }
 };
