@@ -12,12 +12,8 @@ client.Dispatcher.on(Events.GATEWAY_READY, e => {
 });
 
 client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
-    const message = e.message.content;
-    if(message.startsWith(settings.prefix)){
-        const processor = new SelfCommandProcessor(e);
-        const command = message.slice(settings.prefix.length);
-        processor.process(command);
-    }
+    const processor = new SelfCommandProcessor(e, settings.prefix);
+    processor.process();
 });
 
 client.connect(token);
