@@ -1,19 +1,23 @@
 const FS = require("fs");
 const Discordie = require("discordie");
-const settings = require("./.user_token.json");
-
 const Events = Discordie.Events;
+const CmdProcessor = require("./cmd_processor.js");
 
+const token = require("./.user_token.json");
+const settings = require("./settings.json");
 const client = new Discordie();
-
-client.connect(settings);
 
 client.Dispatcher.on(Events.GATEWAY_READY, e => {
     console.log("Connected as: " + client.User.username);
 });
 
 client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
-    if(e.message.content == "ping"){
-        console.log("pong!");
+    const message = e.message.content;
+    if(message.startsWith(settings.prefix)){
+        const processor = new CmdProcessor(e);
+        const command = message.slice(settings.prefix.length);
+        processor.process(command);
     }
 });
+
+client.connect(token);
