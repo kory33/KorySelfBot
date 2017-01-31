@@ -33,6 +33,6 @@ module.exports = class SelfCommandProcessor{
     }
 
     feedBackOutput() {
-        this.event.channel.sendMessage(this.process());
+        this.event.message.channel.sendMessage(this.process());
     }
 }
