@@ -28,11 +28,15 @@ module.exports = class SelfCommandProcessor{
                 return PingCmd.process(commandArgs);
             default:
                 console.log(`command "${commandName}" was given but was ignored.`);
-                return;
+                return "";
         }
     }
 
     feedBackOutput() {
+        const output = this.process();
+        if(output === "") {
+            return;
+        }
         this.event.message.channel.sendMessage(this.process());
     }
 }
