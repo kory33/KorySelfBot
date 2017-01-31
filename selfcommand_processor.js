@@ -17,7 +17,7 @@ module.exports = class SelfCommandProcessor{
      */
     process() {
         if(this.command === undefined || this.command.length == 0) {
-            return;
+            return null;
         }
 
         const commandArgs = this.command.concat();
@@ -28,13 +28,13 @@ module.exports = class SelfCommandProcessor{
                 return PingCmd.process(commandArgs);
             default:
                 console.log(`command "${commandName}" was given but was ignored.`);
-                return "";
+                return null;
         }
     }
 
     feedBackOutput() {
         const output = this.process();
-        if(output === "") {
+        if(output === null) {
             return;
         }
         this.event.message.channel.sendMessage(this.process());
