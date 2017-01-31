@@ -12,6 +12,9 @@ client.Dispatcher.on(Events.GATEWAY_READY, e => {
 });
 
 client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
+    if(client.User.id !== e.message.author.id) {
+        return;
+    }
     const processor = new SelfCommandProcessor(e, settings.prefix);
     processor.feedBackOutput();
 });
