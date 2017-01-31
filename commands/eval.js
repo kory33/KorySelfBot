@@ -1,6 +1,11 @@
 module.exports = {
     process: args => {
         const evalString = args.join(" ");
-        return eval(evalString);
+        try{
+            const result = eval(evalString);
+            return "*Evaluation result:* `" + eval(evalString) + "`";
+        } catch (error) {
+            return "*Error occured!*```CSS\n" + error.toString() + "```";
+        }
     }
 }
