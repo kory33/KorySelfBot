@@ -1,5 +1,6 @@
 const PingCmd = require("./commands/ping.js");
 const EvalCmd = require("./commands/eval.js");
+const SayEvalCmd = require("./commands/sayeval.js");
 
 const PingTimer = require("./commands/ping/ping_timer.js");
 
@@ -36,6 +37,8 @@ module.exports = class SelfCommandProcessor{
                 return PingCmd.process(commandArgs);
             case "eval":
                 return EvalCmd.process(commandArgs);
+            case "sayeval":
+                return SayEvalCmd.process(commandArgs, this.event.message.channel);
             default:
                 console.log(`command "${commandName}" was given but was ignored.`);
                 return null;
