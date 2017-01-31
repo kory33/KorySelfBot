@@ -52,7 +52,7 @@ module.exports = class SelfCommandProcessor{
 
     feedBackOutput() {
         const output = this.process();
-        if(output === null) {
+        if(output === null || output === "") {
             return;
         }
         this.event.message.channel.sendMessage(this.process());
