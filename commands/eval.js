@@ -1,5 +1,5 @@
 module.exports = {
-    process: args => {
+    process: (args, message) => {
         // raw output
         const rawOutput = (args[0] == "--raw") || (args[0] == "-r");
         if(rawOutput) {
@@ -10,7 +10,7 @@ module.exports = {
 
         try{
             const result = eval(evalString);
-            
+
             if(rawOutput) {
                 return result;
             }
