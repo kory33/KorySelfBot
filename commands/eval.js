@@ -1,5 +1,5 @@
 module.exports = {
-    process: (args, channel) => {
+    process: (args, event) => {
         // raw output
         const rawOutput = (args[0] == "--raw") || (args[0] == "-r");
         if(rawOutput) {

@@ -44,7 +44,7 @@ module.exports = class SelfCommandProcessor{
             case "ping":
                 return PingCmd.process(this.commandArgs);
             case "eval":
-                return EvalCmd.process(this.commandArgs, this.message.channel);
+                return EvalCmd.process(this.commandArgs, this.event);
             default:
                 console.log(`command "${this.commandName}" was given but was ignored.`);
                 return null;
