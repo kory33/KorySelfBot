@@ -19,6 +19,9 @@ module.exports = class SelfCommandProcessor{
         this.commandArgs = command.concat();
     }
 
+    /**
+     * pre process the global argument that is irrelevant to the command itself
+     */
     processGlobalArg() {
         if(this.commandArgs[0] === "-d" || this.commandArgs[0] === "--delete") {
             this.message.delete();
@@ -54,6 +57,9 @@ module.exports = class SelfCommandProcessor{
         }
     }
 
+    /**
+     * send back the process result to the same channel where the message was posted
+     */
     feedBackOutput() {
         const output = this.process();
         if(output === null || output === "") {
