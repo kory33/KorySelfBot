@@ -50,14 +50,14 @@ module.exports = class SelfCommandProcessor{
             return null;
         }
 
-        this._processGlobalArg();
-
         const CommandProcessorClass = this._getProcessorClass();
 
         if (CommandProcessorClass === null) {
             console.log(`command "${this.commandName}" was given but was ignored.`);
             return null;
         }
+
+        this._processGlobalArg();
 
         return (new CommandProcessorClass(this.commandArgs, this.event)).run();
     }
