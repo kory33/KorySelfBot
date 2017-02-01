@@ -37,10 +37,9 @@ module.exports = class SelfCommandProcessor{
                 return EvalCmd.process;
             case "topic":
                 return TopicCmd.process;
-            default:
-                console.log(`command "${this.commandName}" was given but was ignored.`);
-                return null;
         }
+        
+        return null;
     }
 
     /**
