@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
     process: (args, event) => {
         // raw output
@@ -15,7 +17,7 @@ module.exports = {
                 return result;
             }
 
-            return "*Evaluation result:* `" + result + "`";
+            return ":desktop: *Evaluation result:*```" + result + "```";
         } catch (error) {
             return "*Error occured!*```CSS\n" + error.toString() + "```";
         }
