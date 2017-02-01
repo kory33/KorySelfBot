@@ -15,7 +15,7 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
     if(client.User.id !== e.message.author.id) {
         return;
     }
-    (new SelfCommandProcessor(e, settings.prefix)).runCommand();
+    (new SelfCommandProcessor(e, settings.prefix)).run();
 });
 
 client.connect(token);

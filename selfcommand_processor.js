@@ -29,52 +29,36 @@ module.exports = class SelfCommandProcessor{
         }
     }
 
-    _getProcessor() {
+    _getProcessorClass() {
         switch(this.commandName){
             case "ping":
-                return PingCmd.process;
+                return PingCmd;
             case "eval":
-                return EvalCmd.process;
+                return EvalCmd;
             case "topic":
-                return TopicCmd.process;
+                return TopicCmd;
         }
-        
+
         return null;
     }
 
     /**
      * return the string result of command evaluation
      */
-    process() {
-        // special case for ping message
-        if(this.message.content == PingCmd.process(null)) {
-            return PingTimer.reflect(this.message);
-        }
-
+    run() {
         if(this.commandName === undefined) {
             return null;
         }
 
         this._processGlobalArg();
 
-        const processor = this._getProcessor();
+        const CommandProcessorClass = this._getProcessorClass();
 
-        if (processor === null) {
+        if (CommandProcessorClass === null) {
             console.log(`command "${this.commandName}" was given but was ignored.`);
             return null;
         }
 
-        return processor();
-    }
-
-    /**
-     * send back the process result to the same channel where the message was posted
-     */
-    runCommand() {
-        const output = this.process();
-        if(output === null || output === "") {
-            return;
-        }
-        this.event.message.channel.sendMessage(output);
+        return (new CommandProcessorClass(this.commandArgs, this.event)).run();
     }
 }

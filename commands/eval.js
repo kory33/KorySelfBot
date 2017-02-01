@@ -1,29 +1,33 @@
 'use strict';
 
-module.exports = {
-    process: (args, event) => {
+const Command = require("./command.js");
+
+class Eval extends Command {
+    getOutput() {
+        const commandArgs = this.args.slice();
+
         // json format output
-        const jsonOutput = (args[0] == "--json");
+        const jsonOutput = (commandArgs[0] == "--json");
         if(jsonOutput) {
-            args.shift();
+            commandArgs.shift();
         }
 
         // specification of highlight format
         let highlightFormat = "";
         if(jsonOutput) {
             highlightFormat = "JSON";
-        } else if ((args[0] == "--highlight") || (args[0] == "-h")) {
-            args.shift();
-            highlightFormat = args.shift();
+        } else if ((commandArgs[0] == "--highlight") || (commandArgs[0] == "-h")) {
+            commandArgs.shift();
+            highlightFormat = commandArgs.shift();
         }
 
         // raw output
-        const rawOutput = (args[0] == "--raw") || (args[0] == "-r");
+        const rawOutput = (commandArgs[0] == "--raw") || (commandArgs[0] == "-r");
         if(rawOutput) {
-            args.shift();
+            commandArgs.shift();
         }
 
-        const evalString = args.join(" ");
+        const evalString = commandArgs.join(" ");
 
         try{
             let result = eval(evalString);
@@ -45,4 +49,10 @@ module.exports = {
             return "*Error occured!*```CSS\n" + error.toString() + "```";
         }
     }
+
+    run() {
+        return this.event.message.channel.sendMessage(this.getOutput());
+    }
 }
+
+module.exports = Eval;
