@@ -56,6 +56,6 @@ module.exports = class SelfCommandProcessor{
         if(output === null || output === "") {
             return;
         }
-        this.event.message.channel.sendMessage(this.process());
+        this.event.message.channel.sendMessage(output);
     }
 }
