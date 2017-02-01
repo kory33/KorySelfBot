@@ -1,9 +1,9 @@
 'use strict';
 
-const Command = require("./command.js");
+const MessageCommand = require("./message_command.js");
 
-class Eval extends Command {
-    getOutput() {
+class Eval extends MessageCommand {
+    getResponse() {
         const commandArgs = this.args.slice();
 
         // json format output
@@ -48,10 +48,6 @@ class Eval extends Command {
         } catch (error) {
             return "*Error occured!*```CSS\n" + error.toString() + "```";
         }
-    }
-
-    run() {
-        return this.event.message.channel.sendMessage(this.getOutput());
     }
 }
 

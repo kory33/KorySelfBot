@@ -2,8 +2,6 @@ const PingCmd = require("./commands/ping.js");
 const EvalCmd = require("./commands/eval.js");
 const TopicCmd = require("./commands/topic.js");
 
-const PingTimer = require("./commands/ping/ping_timer.js");
-
 module.exports = class SelfCommandProcessor{
     constructor(event, commandPrefix) {
         this.event = event;

@@ -1,11 +1,10 @@
 'use strict';
 
-const Command = require("./command.js");
+const MessageCommand = require("./message_command.js");
 
-class Topic extends Command {
-    run() {
-        const message = this.event.message.channel.topic || "*`No topic set to the channel`*";
-        return this.event.message.channel.sendMessage(message);
+class Topic extends MessageCommand {
+    getResponse() {
+        return this.event.message.channel.topic || "*`No topic set to the channel`*";
     }
 }
 
