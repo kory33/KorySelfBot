@@ -29,6 +29,20 @@ module.exports = class SelfCommandProcessor{
         }
     }
 
+    _getProcessor() {
+        switch(this.commandName){
+            case "ping":
+                return PingCmd.process;
+            case "eval":
+                return EvalCmd.process;
+            case "topic":
+                return TopicCmd.process;
+            default:
+                console.log(`command "${this.commandName}" was given but was ignored.`);
+                return null;
+        }
+    }
+
     /**
      * return the string result of command evaluation
      */
@@ -44,17 +58,14 @@ module.exports = class SelfCommandProcessor{
 
         this._processGlobalArg();
 
-        switch(this.commandName) {
-            case "ping":
-                return PingCmd.process(this.commandArgs, this.event);
-            case "eval":
-                return EvalCmd.process(this.commandArgs, this.event);
-            case "topic":
-                return TopicCmd.process(this.commandArgs, this.event);
-            default:
-                console.log(`command "${this.commandName}" was given but was ignored.`);
-                return null;
+        const processor = this._getProcessor();
+
+        if (processor === null) {
+            console.log(`command "${this.commandName}" was given but was ignored.`);
+            return null;
         }
+
+        return processor();
     }
 
     /**
