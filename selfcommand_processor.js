@@ -1,6 +1,7 @@
 const PingCmd = require("./commands/ping.js");
 const EvalCmd = require("./commands/eval.js");
 const TopicCmd = require("./commands/topic.js");
+const SetGameCmd = require("./commands/setgame.js");
 
 module.exports = class SelfCommandProcessor{
     constructor(event, commandPrefix) {
@@ -35,6 +36,8 @@ module.exports = class SelfCommandProcessor{
                 return EvalCmd;
             case "topic":
                 return TopicCmd;
+            case "setgame":
+                return SetGameCmd;
         }
 
         return null;
