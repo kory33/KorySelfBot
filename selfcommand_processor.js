@@ -4,9 +4,10 @@ const TopicCmd = require("./commands/topic.js");
 const SetGameCmd = require("./commands/setgame.js");
 
 module.exports = class SelfCommandProcessor{
-    constructor(event, commandPrefix) {
+    constructor(event, commandPrefix, discordieClient) {
         this.event = event;
         this.message = event.message;
+        this.discordieClient = discordieClient;
 
         if(!this.message.content.startsWith(commandPrefix)) {
             return;
@@ -60,6 +61,6 @@ module.exports = class SelfCommandProcessor{
 
         this._processGlobalArg();
 
-        return (new CommandProcessorClass(this.commandArgs, this.event)).run();
+        return (new CommandProcessorClass(this.commandArgs, this.event, this.discordieClient)).run();
     }
 }

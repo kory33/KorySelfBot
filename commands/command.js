@@ -1,9 +1,10 @@
 'use strict';
 
 class Command {
-    constructor(args, event) {
+    constructor(args, event, discordieClient) {
         this.args = args;
         this.event = event;
+        this.discordieClient = discordieClient;
     }
 
     run() {
