@@ -18,4 +18,15 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
     (new SelfCommandProcessor(e, settings.prefix, client)).run();
 });
 
+client.Dispatcher.on(Discordie.Events.DISCONNECTED, e => {
+    console.log(e);
+    console.log("Disconnected from Discord... Trying to reconnect in 10 seconds");
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            client.connect(settings);
+            resolve();
+        }, 10000);
+    });
+});
+
 client.connect(token);
