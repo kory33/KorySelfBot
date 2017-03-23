@@ -2,6 +2,7 @@ const PingCmd = require("./commands/ping.js");
 const EvalCmd = require("./commands/eval.js");
 const TopicCmd = require("./commands/topic.js");
 const SetGameCmd = require("./commands/setgame.js");
+const PurgeCmd = require("./commands/purge.js");
 
 module.exports = class SelfCommandProcessor {
     constructor(event, commandPrefix, discordieClient) {
@@ -39,6 +40,8 @@ module.exports = class SelfCommandProcessor {
                 return TopicCmd;
             case "setgame":
                 return SetGameCmd;
+            case "purge":
+                return PurgeCmd;
         }
 
         return null;
@@ -61,6 +64,10 @@ module.exports = class SelfCommandProcessor {
 
         this._processGlobalArg();
 
-        return (new CommandProcessorClass(this.commandArgs, this.event, this.discordieClient)).run();
+        try {
+            return (new CommandProcessorClass(this.commandArgs, this.event, this.discordieClient)).run();
+        } catch (e) {
+            console.log(e);
+        }
     }
 }
