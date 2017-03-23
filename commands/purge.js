@@ -33,10 +33,12 @@ class Purge extends Command {
         const processed = _processed || 0;
 
         if (delete_limit <= 0 || processed >= MESSAGE_PROCESS_MAX) {
-            return Promise.resolve();
+            return Promise.resolve(delete_limit);
         }
 
-        return channel.fetchMessages(MESSAGE_PROCESS_CHUNK, before)
+        const fetchAmount = Math.min(MESSAGE_PROCESS_CHUNK, MESSAGE_PROCESS_MAX - _processed);
+
+        return channel.fetchMessages(fetchAmount, before)
             .then(({ messages, limit, before, after }) => {
                 let deleted_count = 0;
                 for (let i in messages) {
@@ -54,9 +56,10 @@ class Purge extends Command {
 
                 if (deleted_count < delete_limit) {
                     const oldestMessage = messages[messages.length - 1];
-                    return this._purgeMessages(channel, delete_limit - deleted_count, oldestMessage.id, processed + MESSAGE_PROCESS_CHUNK);
+                    return this._purgeMessages(channel, delete_limit - deleted_count, oldestMessage.id, processed + fetchAmount);
                 }
-                return;
+
+                return Promise.resolve(0);
             });
     }
 
@@ -69,7 +72,14 @@ class Purge extends Command {
             return Promise.resolve();
         }
 
-        return this._purgeMessages(this.event.message.channel, limit, this.event.message.id);
+        return this._purgeMessages(this.event.message.channel, limit, this.event.message.id)
+            .then(rem_limit => {
+                if (rem_limit === 0) {
+                    return Promise.resolve();
+                }
+
+                return targetChannel.sendMessage(`:x:\`\`\`Failed to delete ${rem_limit} messages(reached the end of search range).\`\`\``);
+            });
     }
 }
 
