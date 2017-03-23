@@ -3,16 +3,16 @@ const EvalCmd = require("./commands/eval.js");
 const TopicCmd = require("./commands/topic.js");
 const SetGameCmd = require("./commands/setgame.js");
 
-module.exports = class SelfCommandProcessor{
+module.exports = class SelfCommandProcessor {
     constructor(event, commandPrefix, discordieClient) {
         this.event = event;
         this.message = event.message;
         this.discordieClient = discordieClient;
 
-        if(!this.message.content.startsWith(commandPrefix)) {
+        if (!this.message.content.startsWith(commandPrefix)) {
             return;
         }
-        
+
         const command = this.message.content.slice(commandPrefix.length).split(" ");
 
         this.commandName = command.shift().toLowerCase();
@@ -23,14 +23,14 @@ module.exports = class SelfCommandProcessor{
      * pre process the global argument that is irrelevant to the command itself
      */
     _processGlobalArg() {
-        if(this.commandArgs[0] === "-d" || this.commandArgs[0] === "--delete") {
+        if (this.commandArgs[0] === "-d" || this.commandArgs[0] === "--delete") {
             this.message.delete();
             this.commandArgs.shift();
         }
     }
 
     _getProcessorClass() {
-        switch(this.commandName){
+        switch (this.commandName) {
             case "ping":
                 return PingCmd;
             case "eval":
@@ -48,7 +48,7 @@ module.exports = class SelfCommandProcessor{
      * return the string result of command evaluation
      */
     run() {
-        if(this.commandName === undefined) {
+        if (this.commandName === undefined) {
             return null;
         }
 
