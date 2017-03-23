@@ -64,10 +64,10 @@ module.exports = class SelfCommandProcessor {
 
         this._processGlobalArg();
 
-        try {
-            return (new CommandProcessorClass(this.commandArgs, this.event, this.discordieClient)).run();
-        } catch (e) {
-            console.log(e);
-        }
+        return new CommandProcessorClass(this.commandArgs, this.event, this.discordieClient)
+            .run()
+            .catch(error => {
+                console.log(error);
+            });
     }
 }
