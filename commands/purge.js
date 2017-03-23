@@ -69,7 +69,6 @@ class Purge extends Command {
             return Promise.resolve();
         }
 
-        this.event.message.delete();
         return this._purgeMessages(this.event.message.channel, limit, this.event.message.id);
     }
 }
