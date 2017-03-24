@@ -23,10 +23,11 @@ client.Dispatcher.on(Events.MESSAGE_CREATE, e => {
 });
 
 client.Dispatcher.on(Discordie.Events.DISCONNECTED, e => {
+    console.log(`Disconnected from Discord... Trying to reconnect in ${reconnectInterval} seconds`);
+
     const reconnectTime = reconnectInterval * 1000;
     reconnectInterval *= 2;
 
-    console.log(`Disconnected from Discord... Trying to reconnect in ${reconnectTime} seconds`);
     return new Promise((resolve) => {
         setTimeout(() => {
             client.connect(settings);
