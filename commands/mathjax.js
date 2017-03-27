@@ -5,7 +5,7 @@ const gm = require("gm");
 const stream = require("stream");
 const svgexport = require('svgexport');
 
-function getEquationSVGString(source) {
+function getEquationSVGFromSource(source) {
     return new Promise((resolve, reject) => {
         mjAPI.typeset({
             "math": source,
@@ -43,7 +43,7 @@ class MathJaxCommand extends Command {
         const channel = this.event.message.channel;
         return Promise.all([
                 channel.sendMessage(`\`\`\`Mathjax: Generating mathjax image with the given mathjax text: ${source}\`\`\``),
-                getEquationSVGString(source)
+                getEquationSVGFromSource(source)
                 .then(svg => getJpgFromSvg(svg))
             ])
             .then(([genMessage, jpgImageData]) => Promise.all([
