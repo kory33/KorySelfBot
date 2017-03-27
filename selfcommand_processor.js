@@ -51,7 +51,7 @@ module.exports = class SelfCommandProcessor {
     }
 
     /**
-     * return the string result of command evaluation
+     * return the process promise
      */
     run() {
         if (this.commandName === undefined) {

@@ -9,11 +9,11 @@ class SetGame extends MessageCommand {
         const gamename = commandArgs.join(" ");
 
         if (gamename === undefined) {
-            return ```setgame failed!```;
+            return `\`\`\`setgame failed!\`\`\``;
         }
 
         this.discordieClient.User.setGame(gamename);
-        
+
         return `\`\`\`Set the game to ${gamename}\`\`\``;
     }
 
