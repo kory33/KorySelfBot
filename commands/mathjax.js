@@ -45,13 +45,13 @@ class MathJaxCommand extends Command {
                 channel.sendMessage(`\`\`\`Mathjax: Generating mathjax image with the given mathjax text: ${source}\`\`\``),
                 getEquationSVGString(source)
                 .then(svg => getJpgFromSvg(svg))
-                .then(jpgData => {
-                    return channel.uploadFile(jpgData, "equation.jpg", "", false);
-                })
             ])
-            .then(messages => {
-                return messages[0].delete();
-            })
+            .then(([genMessage, jpgImageData]) => Promise.all([
+                genMessage.delete(),
+                channel.sendMessage(`\`\`\`Generated the image, uploading it...\`\`\``),
+                channel.uploadFile(jpgImageData, "equation.jpg", "")
+            ]))
+            .then(([, uploadingMessage]) => uploadingMessage.delete())
             .catch(e => {
                 return Promise.reject(`Error while handing process with mathjax: ${e}`);
             });
