@@ -40,9 +40,14 @@ function getJpgFromSvg(svgSource) {
 class MathJaxCommand extends Command {
     run() {
         const source = this.args.join(" ");
+
+        if (source.replace(/^\s*|\s*$/g, "") === "") {
+            return Promise.reject("Mathjax: arguments missing!");
+        }
+
         const channel = this.event.message.channel;
         return Promise.all([
-                channel.sendMessage(`\`\`\`Mathjax: Generating mathjax image with the given mathjax text: ${source}\`\`\``),
+                channel.sendMessage(`\`\`\`Generating mathjax image with the given mathjax text: ${source}\`\`\``),
                 getEquationSVGFromSource(source)
                 .then(svg => getJpgFromSvg(svg))
             ])
