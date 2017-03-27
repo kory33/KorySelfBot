@@ -42,4 +42,9 @@ client.Dispatcher.on(Discordie.Events.DISCONNECTED, e => {
 
 client.connect(token);
 
-process.on("beforeExit", () => client.connect(settings));
+process.on("beforeExit", () => {
+    if (client.connected) {
+        process.exit();
+    }
+    client.connect(settings);
+});
