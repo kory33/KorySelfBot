@@ -52,9 +52,7 @@ class MathJaxCommand extends Command {
                 channel.uploadFile(jpgImageData, "equation.jpg", "")
             ]))
             .then(([, uploadingMessage]) => uploadingMessage.delete())
-            .catch(e => {
-                return Promise.reject(`Error while handing process with mathjax: ${e}`);
-            });
+            .catch(error => Promise.reject(`Error while handing process with mathjax: ${error}`));
     }
 }
 
