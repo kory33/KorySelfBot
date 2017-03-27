@@ -22,22 +22,37 @@ function getEquationSVGString(source) {
 
 function getJpgFromSvg(svgSource) {
     const processedSource = `<?xml version="1.1" encoding="UTF-8" standalone="no"?>` + svgSource;
-    return gm(Buffer.from(processedSource), "svg.svg").options({
-            imageMagick: true
-        })
-        .setFormat("jpg")
-        .stream();
+    return new Promise((resolve, reject) => {
+        try {
+            resolve(
+                gm(Buffer.from(processedSource), "svg.svg").options({
+                    imageMagick: true
+                })
+                .setFormat("jpg")
+                .stream()
+            );
+        } catch (error) {
+            reject(error);
+        }
+    });
 }
 
 class MathJaxCommand extends Command {
     run() {
         const source = this.args.join(" ");
         const channel = this.event.message.channel;
-        return getEquationSVGString(source)
-            .then(svgData => getJpgFromSvg(svgData))
-            .then(jpgData => {
-                return channel.uploadFile(jpgData, "equation.jpg", "", false);
-            }).catch(e => {
+        return Promise.all([
+                channel.sendMessage(`\`\`\`Mathjax: Generating mathjax image with the given mathjax text: ${source}\`\`\``),
+                getEquationSVGString(source)
+                .then(svg => getJpgFromSvg(svg))
+                .then(jpgData => {
+                    return channel.uploadFile(jpgData, "equation.jpg", "", false);
+                })
+            ])
+            .then(messages => {
+                return messages[0].delete();
+            })
+            .catch(e => {
                 return Promise.reject(`Error while handing process with mathjax: ${e}`);
             });
     }
