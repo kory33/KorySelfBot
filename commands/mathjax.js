@@ -52,11 +52,11 @@ class MathJaxCommand extends Command {
                 .then(svg => getJpgFromSvg(svg))
             ])
             .then(([genMessage, jpgImageData]) => Promise.all([
-                genMessage.delete(),
                 channel.sendMessage(`\`\`\`Generated the image, uploading it...\`\`\``),
+                genMessage.delete(),
                 channel.uploadFile(jpgImageData, "equation.jpg", "")
             ]))
-            .then(([, uploadingMessage]) => uploadingMessage.delete())
+            .then(([uploadingMessage]) => uploadingMessage.delete())
             .catch(error => Promise.reject(`Error while handing process with mathjax: ${error}`));
     }
 }
