@@ -70,7 +70,7 @@ module.exports = class SelfCommandProcessor {
         return new CommandProcessorClass(this.commandArgs, this.event, this.discordieClient)
             .run()
             .catch(error => {
-                console.log(error);
+                this.event.message.channel.sendMessage(`\`\`\`${error}\`\`\``)
             });
     }
 }
