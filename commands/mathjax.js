@@ -20,7 +20,7 @@ function getEquationSVGFromSource(source) {
     });
 }
 
-function getJpgFromSvg(svgSource) {
+function getPngFromSvg(svgSource) {
     const processedSource = `<?xml version="1.1" encoding="UTF-8" standalone="no"?>` + svgSource;
     return new Promise((resolve, reject) => {
         try {
@@ -28,7 +28,10 @@ function getJpgFromSvg(svgSource) {
                 gm(Buffer.from(processedSource), "svg.svg").options({
                     imageMagick: true
                 })
-                .setFormat("jpg")
+                .flatten()
+                .resize(20, "%")
+                .setFormat("png")
+                .quality(90)
                 .stream()
             );
         } catch (error) {
@@ -49,12 +52,12 @@ class MathJaxCommand extends Command {
         return Promise.all([
                 channel.sendMessage(`\`\`\`Generating mathjax image with the given mathjax text: ${source}\`\`\``),
                 getEquationSVGFromSource(source)
-                .then(svg => getJpgFromSvg(svg))
+                .then(svg => getPngFromSvg(svg))
             ])
-            .then(([genMessage, jpgImageData]) => Promise.all([
+            .then(([genMessage, pngImageData]) => Promise.all([
                 channel.sendMessage(`\`\`\`Generated the image, uploading it...\`\`\``),
                 genMessage.delete(),
-                channel.uploadFile(jpgImageData, "equation.jpg", "")
+                channel.uploadFile(pngImageData, "equation.png", "")
             ]))
             .then(([uploadingMessage]) => uploadingMessage.delete())
             .catch(error => Promise.reject(`Error while handing process with mathjax: ${error}`));
