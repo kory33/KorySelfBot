@@ -20,7 +20,7 @@ function getEquationSVGFromSource(source) {
     });
 }
 
-function getPngFromSvg(svgSource) {
+function convertSvgToPng(svgSource) {
     const processedSource = `<?xml version="1.1" encoding="UTF-8" standalone="no"?>` + svgSource;
     return new Promise((resolve, reject) => {
         try {
@@ -51,8 +51,7 @@ class MathJaxCommand extends Command {
         const channel = this.event.message.channel;
         return Promise.all([
                 channel.sendMessage(`\`\`\`Generating mathjax image with the given mathjax text: ${source}\`\`\``),
-                getEquationSVGFromSource(source)
-                .then(svg => getPngFromSvg(svg))
+                getEquationSVGFromSource(source).then(svg => convertSvgToPng(svg))
             ])
             .then(([genMessage, pngImageData]) => Promise.all([
                 channel.sendMessage(`\`\`\`Generated the image, uploading it...\`\`\``),
