@@ -51,13 +51,23 @@ class MathJaxCommand extends Command {
         const channel = this.event.message.channel;
         return Promise.all([
                 channel.sendMessage(`\`\`\`Generating mathjax image with the given mathjax text: ${source}\`\`\``),
-                getEquationSVGFromSource(source).then(svg => convertSvgToPng(svg))
+                getEquationSVGFromSource(source).then(svg => convertSvgToPng(svg)).then(
+                    value => ({ "value": value, "resolved": true }),
+                    error => ({ "error": error, "resolved": false })
+                )
             ])
-            .then(([genMessage, pngImageData]) => Promise.all([
-                channel.sendMessage(`\`\`\`Generated the image, uploading it...\`\`\``),
-                genMessage.delete(),
-                channel.uploadFile(pngImageData, "equation.png", "")
-            ]))
+            .then(([genMessage, pngImageDataRefl]) => {
+                genMessage.delete();
+
+                if (!pngImageDataRefl.resolved) {
+                    return Promise.reject(pngImageDataRefl.error);
+                }
+
+                return Promise.all([
+                    channel.sendMessage(`\`\`\`Generated the image, uploading it...\`\`\``),
+                    channel.uploadFile(pngImageDataRefl.value, "equation.png", ""),
+                ])
+            })
             .then(([uploadingMessage]) => uploadingMessage.delete())
             .catch(error => Promise.reject(`Error while handing process with mathjax: ${error}`));
     }
