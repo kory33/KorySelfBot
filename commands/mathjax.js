@@ -3,7 +3,6 @@ const Command = require("./command");
 const mjAPI = require("mathjax-node");
 const gm = require("gm");
 const stream = require("stream");
-const svgexport = require('svgexport');
 
 function getEquationSVGFromSource(source) {
     return new Promise((resolve, reject) => {
