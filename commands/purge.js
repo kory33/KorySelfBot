@@ -1,85 +1,86 @@
 'use strict';
 
 const Command = require("./command");
+const PurgeModeEnum = require("./purge/purge_mode_enum")
 
 const MESSAGE_PROCESS_CHUNK = 50;
 const MESSAGE_PROCESS_MAX = 250;
 
 class Purge extends Command {
-    _initArgParams() {
-        const meArgIndex = this.args.indexOf("--me");
-        if (meArgIndex > -1) {
-            this.me = true;
-            this.args.splice(meArgIndex, 1);
-        } else {
-            this.me = false;
-        }
-    }
-
     constructor(args, event, client) {
         super(args, event, client);
 
-        this._initArgParams();
+        const unprocessedArgs = this.args.slice();
+
+        const modeOptionStr = unprocessedArgs.shift() || "";
+        this.mode = PurgeModeEnum.resolve(modeOptionStr);
+        this.limit = (unprocessedArgs.shift() | 0) || 0;
     }
 
     _shoudDelete(message) {
-        if (this.me) {
+        if (this.mode === PurgeModeEnum.ALL_MESSAGES) {
+            return true;
+        }
+
+        if (this.mode === PurgeModeEnum.SELF_MESSAGES) {
             return message.author.id === this.discordieClient.User.id;
         }
-        return true;
+
+        return false;
     }
 
-    _purgeMessages(channel, delete_limit, before, _processed) {
+    _purgeMessages(channel, deleteMessageNum, before, _processed) {
         const processed = _processed || 0;
 
-        if (delete_limit <= 0 || processed >= MESSAGE_PROCESS_MAX) {
-            return Promise.resolve(delete_limit);
+        if (deleteMessageNum <= 0 || deleteMessageNum > 100) {
+            return Promise.reject("The message deletion limit should be in the range of 1-100.");
         }
 
-        const fetchAmount = Math.min(MESSAGE_PROCESS_CHUNK, MESSAGE_PROCESS_MAX - _processed);
+        if (processed >= MESSAGE_PROCESS_MAX) {
+            return Promise.reject(`Failed to delete ${deleteMessageNum - processed} messages(reached the end of the search range).`);
+        }
+
+        const fetchAmount = Math.min(MESSAGE_PROCESS_CHUNK, MESSAGE_PROCESS_MAX - processed);
 
         return channel.fetchMessages(fetchAmount, before)
             .then(({ messages, limit, before, after }) => {
-                let deleted_count = 0;
-                for (let i in messages) {
-                    const message = messages[i];
-
+                const deleteCandidateMessages = [];
+                for (const message of messages) {
                     if (this._shoudDelete(message)) {
-                        message.delete();
-                        deleted_count++;
-                    }
-
-                    if (deleted_count === delete_limit) {
-                        break;
+                        deleteCandidateMessages.push(message);
                     }
                 }
 
-                if (deleted_count < delete_limit) {
-                    const oldestMessage = messages[messages.length - 1];
-                    return this._purgeMessages(channel, delete_limit - deleted_count, oldestMessage.id, processed + fetchAmount);
+                const deleteTargetMessages = deleteCandidateMessages.slice(0, deleteMessageNum);
+
+                for (const message of deleteTargetMessages) {
+                    message.delete();
                 }
 
-                return Promise.resolve(0);
+                const deletedCount = deleteTargetMessages.length;
+
+                if (deletedCount === deleteMessageNum) {
+                    return Promise.resolve();
+                }
+
+                if (messages.length < fetchAmount) {
+                    return Promise.reject(`Reached the beginning of the channel.`);
+                }
+
+                return this._purgeMessages(channel, deleteMessageNum - deletedCount, after, processed + fetchAmount);
             });
     }
 
     run() {
-        const args = this.args.slice();
-        const targetChannel = this.event.message.channel;
-        const limit = args.shift() | 0;
-
-        if (limit > 101) {
-            return Promise.resolve();
+        if (this.mode === PurgeModeEnum.INVALID) {
+            return Promise.reject(`Invlid option: ${this.args.join(" ")}`);
         }
 
-        return this._purgeMessages(this.event.message.channel, limit, this.event.message.id)
-            .then(rem_limit => {
-                if (rem_limit === 0) {
-                    return Promise.resolve();
-                }
+        if (this.limit > 101) {
+            return Promise.reject("Delete limit cannot be more than 100.");
+        }
 
-                return targetChannel.sendMessage(`:x:\`\`\`Failed to delete ${rem_limit} messages(reached the end of search range).\`\`\``);
-            });
+        return this._purgeMessages(this.event.message.channel, this.limit, this.event.message.id);
     }
 }
 
