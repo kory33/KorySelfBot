@@ -18,12 +18,10 @@ class DeleteAfterCommand extends Command {
         }
 
         return this.event.message.channel.sendMessage(this.message || "\u200b")
-            .then(sentMessage => {
-                return new Promise(resolve => {
-                    setTimeout(resolve(sentMessage), deletionTime);
-                })
+            .then(message => {
+                return new Promise(resolve => setTimeout(() => resolve(message), this.deletionTime))
             })
-            .then(sentMessage => sentMessage.delete());
+            .then(message => message.delete());
     }
 }
 
