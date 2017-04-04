@@ -4,6 +4,7 @@ const TopicCmd = require("./commands/topic.js");
 const SetGameCmd = require("./commands/setgame.js");
 const PurgeCmd = require("./commands/purge.js");
 const MathJaxCmd = require("./commands/mathjax.js");
+const DeleteAfterCmd = require("./commands/deleteafter.js");
 
 module.exports = class SelfCommandProcessor {
     constructor(event, commandPrefix, discordieClient) {
@@ -45,6 +46,8 @@ module.exports = class SelfCommandProcessor {
                 return PurgeCmd;
             case "mathjax":
                 return MathJaxCmd;
+            case "deleteafter":
+                return DeleteAfterCmd;
         }
 
         return null;
