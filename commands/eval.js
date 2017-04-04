@@ -2,19 +2,21 @@
 
 const MessageCommand = require("./message_command.js");
 
+const space = {};
+
 class Eval extends MessageCommand {
     getResponse() {
         const commandArgs = this.args.slice();
 
         // json format output
         const jsonOutput = (commandArgs[0] == "--json");
-        if(jsonOutput) {
+        if (jsonOutput) {
             commandArgs.shift();
         }
 
         // specification of highlight format
         let highlightFormat = "";
-        if(jsonOutput) {
+        if (jsonOutput) {
             highlightFormat = "JSON";
         } else if ((commandArgs[0] == "--highlight") || (commandArgs[0] == "-h")) {
             commandArgs.shift();
@@ -23,24 +25,24 @@ class Eval extends MessageCommand {
 
         // raw output
         const rawOutput = (commandArgs[0] == "--raw") || (commandArgs[0] == "-r");
-        if(rawOutput) {
+        if (rawOutput) {
             commandArgs.shift();
         }
 
         const evalString = commandArgs.join(" ");
 
-        try{
+        try {
             let result = eval(evalString);
 
-            if(rawOutput) {
+            if (rawOutput) {
                 return result;
             }
 
-            if(jsonOutput) {
+            if (jsonOutput) {
                 result = JSON.stringify(result, null, 4);
             }
 
-            if(highlightFormat !== "") {
+            if (highlightFormat !== "") {
                 result = highlightFormat + "\n" + result;
             }
 

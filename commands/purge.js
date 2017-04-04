@@ -73,7 +73,7 @@ class Purge extends Command {
 
     run() {
         if (this.mode === PurgeModeEnum.INVALID) {
-            return Promise.reject(`Invlid option: ${this.args.join(" ")}`);
+            return Promise.reject(`Mode option should be all|me, but given ${this.args.join(" ")}`);
         }
 
         if (this.limit > 101) {
