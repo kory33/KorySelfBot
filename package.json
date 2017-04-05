@@ -2,7 +2,7 @@
     "name": "kory-selfbot",
     "version": "0.0.1",
     "description": "",
-    "main": "selfbot.js",
+    "main": "index.js",
     "dependencies": {
         "discordie": "^0.11.0",
         "gm": "^1.23.0",
