@@ -1,3 +1,5 @@
+'use strict';
+
 const PingCmd = require("./commands/ping.js");
 const EvalCmd = require("./commands/eval.js");
 const TopicCmd = require("./commands/topic.js");
@@ -5,6 +7,7 @@ const SetGameCmd = require("./commands/setgame.js");
 const PurgeCmd = require("./commands/purge.js");
 const MathJaxCmd = require("./commands/mathjax.js");
 const DeleteAfterCmd = require("./commands/deleteafter.js");
+const QuoteCmd = require("./commands/quote.js");
 
 module.exports = class SelfCommandProcessor {
     constructor(event, commandPrefix, discordieClient) {
@@ -48,6 +51,8 @@ module.exports = class SelfCommandProcessor {
                 return MathJaxCmd;
             case "deleteafter":
                 return DeleteAfterCmd;
+            case "quote":
+                return QuoteCmd;
         }
 
         return null;

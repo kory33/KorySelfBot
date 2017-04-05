@@ -1,26 +1,26 @@
 {
-  "name": "kory-selfbot",
-  "version": "0.0.1",
-  "description": "",
-  "main": "selfbot.js",
-  "dependencies": {
-    "discordie": "^0.11.0",
-    "gm": "^1.23.0",
-    "jsonify": "^0.0.0",
-    "mathjax-node": "^1.0.0"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Kory33/KorySelfBot.git"
-  },
-  "author": "Kory33",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Kory33/KorySelfBot/issues"
-  },
-  "homepage": "https://github.com/Kory33/KorySelfBot#readme"
+    "name": "kory-selfbot",
+    "version": "0.0.1",
+    "description": "",
+    "main": "selfbot.js",
+    "dependencies": {
+        "discordie": "^0.11.0",
+        "gm": "^1.23.0",
+        "jsonify": "^0.0.0",
+        "mathjax-node": "^1.0.0"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Kory33/KorySelfBot.git"
+    },
+    "author": "Kory33",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/Kory33/KorySelfBot/issues"
+    },
+    "homepage": "https://github.com/Kory33/KorySelfBot#readme"
 }
