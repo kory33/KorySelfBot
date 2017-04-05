@@ -1,13 +1,6 @@
 'use strict';
 
-const PingCmd = require("./commands/ping.js");
-const EvalCmd = require("./commands/eval.js");
-const TopicCmd = require("./commands/topic.js");
-const SetGameCmd = require("./commands/setgame.js");
-const PurgeCmd = require("./commands/purge.js");
-const MathJaxCmd = require("./commands/mathjax.js");
-const DeleteAfterCmd = require("./commands/deleteafter.js");
-const QuoteCmd = require("./commands/quote.js");
+const Commands = require("./commands");
 
 module.exports = class SelfCommandProcessor {
     constructor(event, commandPrefix, discordieClient) {
@@ -35,29 +28,6 @@ module.exports = class SelfCommandProcessor {
         }
     }
 
-    _getProcessorClass() {
-        switch (this.commandName) {
-            case "ping":
-                return PingCmd;
-            case "eval":
-                return EvalCmd;
-            case "topic":
-                return TopicCmd;
-            case "setgame":
-                return SetGameCmd;
-            case "purge":
-                return PurgeCmd;
-            case "mathjax":
-                return MathJaxCmd;
-            case "deleteafter":
-                return DeleteAfterCmd;
-            case "quote":
-                return QuoteCmd;
-        }
-
-        return null;
-    }
-
     /**
      * return the process promise
      */
@@ -66,9 +36,9 @@ module.exports = class SelfCommandProcessor {
             return null;
         }
 
-        const CommandProcessorClass = this._getProcessorClass();
+        const CommandProcessorClass = Commands[this.commandName];
 
-        if (CommandProcessorClass === null) {
+        if (CommandProcessorClass === undefined) {
             console.log(`command "${this.commandName}" was given but was ignored.`);
             return null;
         }
@@ -78,7 +48,8 @@ module.exports = class SelfCommandProcessor {
         return new CommandProcessorClass(this.commandArgs, this.event, this.discordieClient)
             .run()
             .catch(error => {
-                this.event.message.channel.sendMessage(`\`\`\`${error}\`\`\``)
+                console.log(`\`\`\`${error}\`\`\``);
+                this.event.message.channel.sendMessage(`\`\`\`${error}\`\`\``);
             });
     }
 }

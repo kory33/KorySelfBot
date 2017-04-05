@@ -1,7 +1,7 @@
 const FS = require("fs");
 const Discordie = require("discordie");
 const Events = Discordie.Events;
-const SelfCommandProcessor = require("./selfcommand_processor.js");
+const SelfCommandProcessor = require("./command_processor");
 
 const token = require("./.user_token.json");
 const settings = require("./settings.json");
