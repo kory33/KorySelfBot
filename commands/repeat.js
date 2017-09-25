@@ -47,6 +47,7 @@ function isTaskActive(channel) {
 
 function unregisterTask(channel) {
     registerRepeatTask(channel, null);
+    return Promise.resolve();
 }
 
 function resumeTask(channel) {
