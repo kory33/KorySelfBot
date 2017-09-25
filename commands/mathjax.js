@@ -1,41 +1,21 @@
 'use strict';
 const Command = require("./command");
-const mjAPI = require("mathjax-node");
-const gm = require("gm");
-const stream = require("stream");
+const mjAPI = require("mathjax-node-svg2png");
+const sharp = require("sharp");
 
-function getEquationSVGFromSource(source) {
+function getEquationPNGFromSource(source) {
     return new Promise((resolve, reject) => {
         mjAPI.typeset({
             "math": source,
             "format": "TeX",
-            "svg": true
+            "png": true,
+            "scale":2
         }, data => {
             if (data.errors) {
                 reject(data.errors);
             }
-            resolve(data.svg);
+            resolve(data.png);
         });
-    });
-}
-
-function convertSvgToPng(svgSource) {
-    const processedSource = `<?xml version="1.1" encoding="UTF-8" standalone="no"?>` + svgSource;
-    return new Promise((resolve, reject) => {
-        try {
-            resolve(
-                gm(Buffer.from(processedSource), "svg.svg").options({
-                    imageMagick: true
-                })
-                .flatten()
-                .resize(20, "%")
-                .setFormat("png")
-                .quality(90)
-                .stream()
-            );
-        } catch (error) {
-            reject(error);
-        }
     });
 }
 
@@ -50,23 +30,23 @@ class MathJaxCommand extends Command {
         const channel = this.event.message.channel;
         return Promise.all([
                 channel.sendMessage(`\`\`\`Generating mathjax image with the given mathjax text: ${source}\`\`\``),
-                getEquationSVGFromSource(source).then(svg => convertSvgToPng(svg)).then(
-                    value => ({ "value": value, "resolved": true }),
-                    error => ({ "error": error, "resolved": false })
-                )
+                getEquationPNGFromSource(source)
             ])
-            .then(([genMessage, pngImageDataRefl]) => {
-                genMessage.delete();
-
-                if (!pngImageDataRefl.resolved) {
-                    return Promise.reject(pngImageDataRefl.error);
-                }
-
-                return Promise.all([
-                    channel.sendMessage(`\`\`\`Generated the image, uploading it...\`\`\``),
-                    channel.uploadFile(pngImageDataRefl.value, "equation.png", ""),
-                ])
+            .then(([generationMessage, pngImagePlain]) => {
+                generationMessage.delete();
+                return new Buffer(pngImagePlain.substring("data:image/png;base64,".length), "base64");
             })
+            .then(pngBuffer => sharp(pngBuffer)
+                .flatten()
+                .background("#FFFFFF")
+                .jpeg()
+                .toBuffer({ resolveWithObject : true })
+            )
+            .then(({data : jpgBuffer}) => Promise.all([
+                    channel.sendMessage(`\`\`\`Generated the image, uploading it...\`\`\``),
+                    channel.uploadFile(jpgBuffer, "equation.jpg", "")
+                ])
+            )
             .then(([uploadingMessage]) => uploadingMessage.delete())
             .catch(error => Promise.reject(`Error while handing process with mathjax: ${error}`));
     }
