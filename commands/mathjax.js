@@ -40,6 +40,7 @@ class MathJaxCommand extends Command {
                 .flatten()
                 .background("#FFFFFF")
                 .jpeg()
+                .extend(10)
                 .toBuffer({ resolveWithObject : true })
             )
             .then(({data : jpgBuffer}) => Promise.all([
