@@ -15,17 +15,10 @@ class ConsoleManager {
     }
 
     resetCentral() {
-        if (this._consoles.central) {
-            this._consoles.central.exit();
-        }
         this._consoles.central = this._getConsoleProcess(data => this._central_console_target.sendMessage(data));
     }
 
     unbind(id) {
-        const target = this._consoles.binds[id];
-        if (target) {
-            target.exit();
-        }
         this._consoles.binds[id] = undefined;
     }
 
@@ -57,6 +50,7 @@ class ConsoleManager {
 const modeMethodNames = {
     "list" : "_list",
     "bind" : "_bind",
+    "unbind" : "_unbind",
     "exec" : '_exec'
 }
 
@@ -90,6 +84,13 @@ class ConsoleCommand extends Command {
         singletonManager.executeScript(this.target_channel, script.join(" "));
 
         return Promise.resolve();
+    }
+
+    _unbind() {
+        singletonManager.unbind(this.target_channel.id);
+
+        const message = `\`\`\`REPL server unbound from channnel <#${this.target_channel.id}>\`\`\``;
+        return this.target_channel.sendMessage(message);
     }
 
     run() {
