@@ -47,13 +47,6 @@ class ConsoleManager {
     }
 }
 
-const modeMethodNames = {
-    "list" : "_list",
-    "bind" : "_bind",
-    "unbind" : "_unbind",
-    "exec" : '_exec'
-}
-
 const singletonManager = new ConsoleManager();
 
 class ConsoleCommand extends Command {
@@ -99,7 +92,7 @@ class ConsoleCommand extends Command {
         const mode = args_copy.shift();
         const remaining_args = args_copy.slice();
 
-        const exec_method = modeMethodNames[mode];
+        const exec_method = this["_" + mode];
 
         if (!exec_method) {
             return this.event.message.channel
@@ -108,7 +101,7 @@ class ConsoleCommand extends Command {
                 .then(sent_message => sent_message.delete());
         }
 
-        return this[exec_method](remaining_args);
+        return exec_method(remaining_args);
     }
 }
 
