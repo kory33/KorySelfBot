@@ -92,16 +92,14 @@ class ConsoleCommand extends Command {
         const mode = args_copy.shift();
         const remaining_args = args_copy.slice();
 
-        const exec_method = this["_" + mode];
-
-        if (!exec_method) {
+        if (!this["_" + mode]) {
             return this.event.message.channel
                 .sendMessage(`\`\`\`Mode is undefined\`\`\``)
                 .then(sent_message => new Promise(res => setTimeout(res, 2000, sent_message)))
                 .then(sent_message => sent_message.delete());
         }
 
-        return exec_method(remaining_args);
+        return this["_" + mode](remaining_args);
     }
 }
 
