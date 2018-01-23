@@ -9,7 +9,7 @@ function getEquationPNGFromSource(source) {
             "math": source,
             "format": "TeX",
             "png": true,
-            "scale":2
+            "ex": 26
         }, data => {
             if (data.errors) {
                 reject(data.errors);
@@ -38,9 +38,10 @@ class MathJaxCommand extends Command {
             })
             .then(pngBuffer => sharp(pngBuffer)
                 .flatten()
+                .trim()
                 .background("#FFFFFF")
+                .extend(30)
                 .jpeg()
-                .extend(10)
                 .toBuffer({ resolveWithObject : true })
             )
             .then(({data : jpgBuffer}) => Promise.all([
